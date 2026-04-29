@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Hospitality Guide — Serve Legal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #01143F;
+      --red: #AB0535;
+      --white: #FFFFFF;
+      --light-grey: #F5F6FA;
+      --mid-grey: #E8EAF0;
+      --text-muted: #6B7280;
+    }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--white);
+      color: var(--navy);
+      line-height: 1.6;
+    }
+
+    /* HEADER */
+    .header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--mid-grey);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.3px;
+    }
+
+    /* HERO */
+    .hero {
+      background: var(--navy);
+      color: var(--white);
+      padding: 72px 24px 96px;
+      text-align: center;
+    }
+
+    .hero .label {
+      display: inline-block;
+      background: rgba(171,5,53,0.18);
+      color: #ffb3c1;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(24px, 4.5vw, 44px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      max-width: 720px;
+      margin: 0 auto 20px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: rgba(255,255,255,0.82);
+      max-width: 540px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* MAIN */
+    .main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px 72px;
+    }
+
+    /* GUIDE PREVIEW STRIP */
+    .guide-strip {
+      background: var(--light-grey);
+      border: 1px solid var(--mid-grey);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-top: -44px;
+      margin-bottom: 32px;
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .guide-icon {
+      flex-shrink: 0;
+      width: 56px;
+      height: 72px;
+      background: var(--navy);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .guide-details h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .guide-lines {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .guide-lines li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .guide-lines .dot {
+      flex-shrink: 0;
+      width: 6px;
+      height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+      margin-top: 6px;
+    }
+
+    /* FORM CARD */
+    .form-card {
+      background: var(--white);
+      border: 1px solid var(--mid-grey);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 24px rgba(1,20,63,0.10);
+    }
+
+    .form-card h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .form-card .sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid var(--mid-grey);
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--white);
+    }
+
+    .field input:focus { border-color: var(--navy); }
+    .field input::placeholder { color: #B0B7C3; }
+
+    .btn-primary {
+      display: inline-block;
+      width: 100%;
+      padding: 15px 32px;
+      background: var(--red);
+      color: var(--white);
+      border: none;
+      border-radius: 100px;
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 6px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { background: #8f0429; transform: translateY(-1px); }
+
+    .privacy-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    /* THANK YOU */
+    .thankyou { display: none; text-align: center; padding: 12px 0; }
+
+    .thankyou .check {
+      width: 56px; height: 56px;
+      background: #E8F5E9; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+
+    .thankyou h3 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+    .thankyou p { font-size: 15px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; max-width: 360px; margin-left: auto; margin-right: auto; }
+
+    .download-btn {
+      display: inline-block;
+      padding: 14px 32px;
+      background: var(--navy);
+      color: var(--white);
+      border-radius: 100px;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .download-btn:hover { background: #0a2260; }
+
+    /* SECONDARY CTA */
+    .secondary-cta {
+      margin-top: 36px;
+      padding: 28px 32px;
+      background: var(--light-grey);
+      border-radius: 14px;
+      text-align: center;
+    }
+
+    .secondary-cta p {
+      font-size: 15px;
+      color: var(--navy);
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .secondary-cta a {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--red);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .secondary-cta a:hover { color: #8f0429; }
+
+    /* FOOTER */
+    .footer {
+      border-top: 1px solid var(--mid-grey);
+      padding: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer a { color: var(--navy); font-weight: 600; text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hero { padding: 48px 20px 80px; }
+      .guide-strip { flex-direction: column; gap: 16px; margin-top: -32px; padding: 22px 20px; }
+      .form-card { padding: 28px 20px; }
+      .secondary-cta { padding: 22px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo-mark">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="18,2 34,18 18,34 2,18" fill="#AB0535"/>
+        <polygon points="18,8 28,18 18,28 8,18" fill="#ffffff" opacity="0.25"/>
+      </svg>
+    </div>
+    <span class="brand-name">Serve Legal</span>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="label">Free Guide</div>
+    <h1>The Hospitality Operator's Guide to Consistent Guest Experience</h1>
+    <p>A practical guide covering mystery dining, allergen compliance, and service standards — free to download.</p>
+  </section>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- GUIDE PREVIEW -->
+    <div class="guide-strip">
+      <div class="guide-icon">
+        <svg width="28" height="36" viewBox="0 0 28 36" fill="none">
+          <rect x="2" y="2" width="24" height="32" rx="3" fill="white" opacity="0.15" stroke="white" stroke-width="1.5"/>
+          <path d="M7 10h14M7 16h14M7 22h9" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="guide-details">
+        <h3>What you'll find inside this guide:</h3>
+        <ul class="guide-lines">
+          <li>
+            <span class="dot"></span>
+            <span>How to set up a mystery dining programme that delivers real, actionable data — not just a score.</span>
+          </li>
+          <li>
+            <span class="dot"></span>
+            <span>The allergen compliance checklist every multi-site operator needs, and why staff knowledge gaps are the biggest risk.</span>
+          </li>
+          <li>
+            <span class="dot"></span>
+            <span>A framework for maintaining consistent service standards across locations, from induction to ongoing audit.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="form-card">
+      <h2>Get the free guide</h2>
+      <p class="sub">Instant access — no card required.</p>
+
+      <div id="resource-form">
+        <input type="hidden" id="hs-source" value="dining-ms-cold" />
+        <div class="field">
+          <label>First Name</label>
+          <input type="text" id="rf-first" placeholder="e.g. Sarah" autocomplete="given-name" />
+        </div>
+        <div class="field">
+          <label>Company Name</label>
+          <input type="text" id="rf-company" placeholder="e.g. The Crown Group" autocomplete="organization" />
+        </div>
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" id="rf-email" placeholder="you@yourcompany.com" autocomplete="email" />
+        </div>
+        <button class="btn-primary" onclick="submitResourceForm()">Get the Free Guide</button>
+        <p class="privacy-note">We'll only use your details to send you this guide and relevant Serve Legal updates. No spam, ever.</p>
+      </div>
+
+      <div class="thankyou" id="resource-thankyou">
+        <div class="check">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M5 12l5 5L19 7" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Your guide is ready!</h3>
+        <p>Click below to download your copy. We've also sent the link to your email so you can access it any time.</p>
+        <a href="[RESOURCE PDF LINK]" class="download-btn" target="_blank" rel="noopener">Download the Guide</a>
+      </div>
+    </div>
+
+    <!-- SECONDARY CTA -->
+    <div class="secondary-cta">
+      <p>Prefer to talk it through?</p>
+      <a href="https://calendly.com/servelegal/free-audit" target="_blank" rel="noopener">Book a free 20-minute call with our team &rarr;</a>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    &copy; Serve Legal Ltd. &nbsp;<a href="https://servelegal.co.uk" target="_blank" rel="noopener">servelegal.co.uk</a>
+  </footer>
+
+  <script>
+    function submitResourceForm() {
+      var first   = document.getElementById('rf-first').value.trim();
+      var company = document.getElementById('rf-company').value.trim();
+      var email   = document.getElementById('rf-email').value.trim();
+
+      if (!first || !company || !email) {
+        alert('Please fill in all fields before submitting.');
+        return;
+      }
+
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      document.getElementById('resource-form').style.display = 'none';
+      document.getElementById('resource-thankyou').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>

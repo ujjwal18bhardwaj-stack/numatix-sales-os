@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compliance Score Checker — Serve Legal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #01143F;
+      --red: #AB0535;
+      --white: #FFFFFF;
+      --light-grey: #F5F6FA;
+      --mid-grey: #E8EAF0;
+      --text-muted: #6B7280;
+      --green: #2E7D32;
+      --amber: #E65100;
+    }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--white);
+      color: var(--navy);
+      line-height: 1.6;
+    }
+
+    /* HEADER */
+    .header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--mid-grey);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.3px;
+    }
+
+    /* HERO */
+    .hero {
+      background: var(--navy);
+      color: var(--white);
+      padding: 72px 24px 80px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(26px, 5vw, 46px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      max-width: 660px;
+      margin: 0 auto 20px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: rgba(255,255,255,0.82);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* MAIN */
+    .main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+    }
+
+    /* QUIZ CARD */
+    .quiz-card {
+      background: var(--white);
+      border: 1px solid var(--mid-grey);
+      border-radius: 16px;
+      padding: 40px;
+      margin-top: -44px;
+      box-shadow: 0 4px 24px rgba(1,20,63,0.10);
+    }
+
+    /* PROGRESS */
+    .progress-wrap {
+      margin-bottom: 28px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      background: var(--mid-grey);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--red);
+      border-radius: 100px;
+      transition: width 0.4s ease;
+    }
+
+    /* QUESTION */
+    .question-block { display: none; }
+    .question-block.active { display: block; }
+
+    .question-block h2 {
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-btn {
+      display: block;
+      width: 100%;
+      padding: 14px 18px;
+      border: 1.5px solid var(--mid-grey);
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--navy);
+      background: var(--white);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .option-btn:hover { border-color: var(--navy); background: var(--light-grey); }
+    .option-btn.selected { border-color: var(--navy); background: var(--navy); color: var(--white); }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      gap: 12px;
+    }
+
+    .btn-back {
+      padding: 12px 24px;
+      border: 1.5px solid var(--mid-grey);
+      border-radius: 100px;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+      background: var(--white);
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .btn-back:hover { border-color: var(--navy); }
+
+    .btn-next {
+      padding: 12px 28px;
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 100px;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-next:hover { background: #0a2260; }
+
+    /* RESULT */
+    .result-block { display: none; }
+
+    .score-display {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      border: 6px solid;
+    }
+
+    .score-circle .score-num {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .score-circle .score-label {
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+
+    .score-circle.red  { border-color: #AB0535; color: #AB0535; background: #fdf2f4; }
+    .score-circle.amber { border-color: #E65100; color: #E65100; background: #fff3e0; }
+    .score-circle.green { border-color: #2E7D32; color: #2E7D32; background: #f1f8e9; }
+
+    .score-band-label {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .score-band-label.red { color: #AB0535; }
+    .score-band-label.amber { color: #E65100; }
+    .score-band-label.green { color: #2E7D32; }
+
+    .score-message {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+
+    .divider { height: 1px; background: var(--mid-grey); margin: 28px 0; }
+
+    .result-form h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 20px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid var(--mid-grey);
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--white);
+    }
+
+    .field input:focus { border-color: var(--navy); }
+    .field input::placeholder { color: #B0B7C3; }
+
+    .btn-primary {
+      display: inline-block;
+      width: 100%;
+      padding: 15px 32px;
+      background: var(--red);
+      color: var(--white);
+      border: none;
+      border-radius: 100px;
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 6px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { background: #8f0429; transform: translateY(-1px); }
+
+    /* FINAL THANK YOU */
+    .final-thankyou { display: none; text-align: center; padding: 16px 0; }
+
+    .final-thankyou .check {
+      width: 56px; height: 56px;
+      background: #E8F5E9; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+
+    .final-thankyou h3 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+    .final-thankyou p { font-size: 15px; color: var(--text-muted); max-width: 340px; margin: 0 auto; }
+
+    /* FOOTER */
+    .footer {
+      border-top: 1px solid var(--mid-grey);
+      padding: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer a { color: var(--navy); font-weight: 600; text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hero { padding: 48px 20px 64px; }
+      .quiz-card { padding: 28px 20px; margin-top: -32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo-mark">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="18,2 34,18 18,34 2,18" fill="#AB0535"/>
+        <polygon points="18,8 28,18 18,28 8,18" fill="#ffffff" opacity="0.25"/>
+      </svg>
+    </div>
+    <span class="brand-name">Serve Legal</span>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>How Compliant Is Your Guest Experience?</h1>
+    <p>Answer 5 quick questions and get an instant compliance score for your hospitality operation.</p>
+  </section>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="quiz-card">
+
+      <!-- PROGRESS -->
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-label">
+          <span id="progress-text">Question 1 of 5</span>
+          <span id="progress-pct">20%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill" style="width: 20%;"></div>
+        </div>
+      </div>
+
+      <!-- QUESTIONS -->
+      <div class="question-block active" id="q1">
+        <h2>How many sites do you operate?</h2>
+        <div class="options">
+          <button class="option-btn" onclick="selectOption(1, 0, this)">Under 5</button>
+          <button class="option-btn" onclick="selectOption(1, 1, this)">5–20</button>
+          <button class="option-btn" onclick="selectOption(1, 2, this)">20–50</button>
+          <button class="option-btn" onclick="selectOption(1, 3, this)">50+</button>
+        </div>
+        <div class="nav-row">
+          <span></span>
+          <button class="btn-next" onclick="nextQuestion(1)">Next &rarr;</button>
+        </div>
+      </div>
+
+      <div class="question-block" id="q2">
+        <h2>How often do you carry out internal service audits?</h2>
+        <div class="options">
+          <button class="option-btn" onclick="selectOption(2, 0, this)">Never</button>
+          <button class="option-btn" onclick="selectOption(2, 1, this)">Quarterly</button>
+          <button class="option-btn" onclick="selectOption(2, 2, this)">Monthly</button>
+          <button class="option-btn" onclick="selectOption(2, 3, this)">Weekly</button>
+        </div>
+        <div class="nav-row">
+          <button class="btn-back" onclick="prevQuestion(2)">&larr; Back</button>
+          <button class="btn-next" onclick="nextQuestion(2)">Next &rarr;</button>
+        </div>
+      </div>
+
+      <div class="question-block" id="q3">
+        <h2>Do your staff receive regular allergen handling training?</h2>
+        <div class="options">
+          <button class="option-btn" onclick="selectOption(3, 2, this)">Yes</button>
+          <button class="option-btn" onclick="selectOption(3, 0, this)">No</button>
+          <button class="option-btn" onclick="selectOption(3, 1, this)">Unsure</button>
+        </div>
+        <div class="nav-row">
+          <button class="btn-back" onclick="prevQuestion(3)">&larr; Back</button>
+          <button class="btn-next" onclick="nextQuestion(3)">Next &rarr;</button>
+        </div>
+      </div>
+
+      <div class="question-block" id="q4">
+        <h2>How do you currently measure guest experience?</h2>
+        <div class="options">
+          <button class="option-btn" onclick="selectOption(4, 0, this)">We don't</button>
+          <button class="option-btn" onclick="selectOption(4, 1, this)">Customer surveys</button>
+          <button class="option-btn" onclick="selectOption(4, 2, this)">Mystery shopping</button>
+          <button class="option-btn" onclick="selectOption(4, 3, this)">Mixed methods</button>
+        </div>
+        <div class="nav-row">
+          <button class="btn-back" onclick="prevQuestion(4)">&larr; Back</button>
+          <button class="btn-next" onclick="nextQuestion(4)">Next &rarr;</button>
+        </div>
+      </div>
+
+      <div class="question-block" id="q5">
+        <h2>What is your biggest compliance concern?</h2>
+        <div class="options">
+          <button class="option-btn" onclick="selectOption(5, 1, this)">Allergen handling</button>
+          <button class="option-btn" onclick="selectOption(5, 1, this)">Service consistency</button>
+          <button class="option-btn" onclick="selectOption(5, 1, this)">Staff knowledge</button>
+          <button class="option-btn" onclick="selectOption(5, 2, this)">All of the above</button>
+        </div>
+        <div class="nav-row">
+          <button class="btn-back" onclick="prevQuestion(5)">&larr; Back</button>
+          <button class="btn-next" onclick="showResult()">See My Score &rarr;</button>
+        </div>
+      </div>
+
+      <!-- RESULT -->
+      <div class="result-block" id="result-block">
+        <div class="score-display">
+          <div class="score-circle" id="score-circle">
+            <span class="score-num" id="score-num">—</span>
+            <span class="score-label">out of 100</span>
+          </div>
+          <div class="score-band-label" id="score-band-label"></div>
+          <p class="score-message" id="score-message"></p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div id="result-form-wrap">
+          <div class="result-form">
+            <h3>Receive your full score report by email</h3>
+            <input type="hidden" id="hs-source" value="dining-ms-cold" />
+            <div class="field">
+              <label>First Name</label>
+              <input type="text" id="res-first" placeholder="e.g. Sarah" autocomplete="given-name" />
+            </div>
+            <div class="field">
+              <label>Email Address</label>
+              <input type="email" id="res-email" placeholder="you@yourcompany.com" autocomplete="email" />
+            </div>
+            <div class="field">
+              <label>Company Name</label>
+              <input type="text" id="res-company" placeholder="e.g. The Crown Group" autocomplete="organization" />
+            </div>
+            <button class="btn-primary" onclick="submitResultForm()">Send My Score Report</button>
+          </div>
+        </div>
+
+        <div class="final-thankyou" id="final-thankyou">
+          <div class="check">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12l5 5L19 7" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>Report on its way!</h3>
+          <p>Check your inbox — your personalised compliance score report will arrive shortly.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    &copy; Serve Legal Ltd. &nbsp;<a href="https://servelegal.co.uk" target="_blank" rel="noopener">servelegal.co.uk</a>
+  </footer>
+
+  <script>
+    var answers = [null, null, null, null, null]; // index 0-4 for Q1-Q5
+
+    function selectOption(qNum, value, el) {
+      answers[qNum - 1] = value;
+      var opts = el.parentElement.querySelectorAll('.option-btn');
+      opts.forEach(function(o) { o.classList.remove('selected'); });
+      el.classList.add('selected');
+    }
+
+    function nextQuestion(currentQ) {
+      if (answers[currentQ - 1] === null) {
+        alert('Please select an answer before continuing.');
+        return;
+      }
+      document.getElementById('q' + currentQ).classList.remove('active');
+      document.getElementById('q' + (currentQ + 1)).classList.add('active');
+      updateProgress(currentQ + 1);
+    }
+
+    function prevQuestion(currentQ) {
+      document.getElementById('q' + currentQ).classList.remove('active');
+      document.getElementById('q' + (currentQ - 1)).classList.add('active');
+      updateProgress(currentQ - 1);
+    }
+
+    function updateProgress(qNum) {
+      var pct = Math.round((qNum / 5) * 100);
+      document.getElementById('progress-text').textContent = 'Question ' + qNum + ' of 5';
+      document.getElementById('progress-pct').textContent = pct + '%';
+      document.getElementById('progress-fill').style.width = pct + '%';
+    }
+
+    function showResult() {
+      if (answers[4] === null) {
+        alert('Please select an answer before continuing.');
+        return;
+      }
+
+      var total = answers.reduce(function(sum, v) { return sum + (v || 0); }, 0);
+      var maxScore = 3 + 3 + 2 + 3 + 2; // max points per question
+      var score = Math.round((total / maxScore) * 100);
+
+      // Hide all questions and progress
+      for (var i = 1; i <= 5; i++) {
+        document.getElementById('q' + i).classList.remove('active');
+      }
+      document.getElementById('progress-wrap').style.display = 'none';
+      document.getElementById('result-block').style.display = 'block';
+
+      var circle = document.getElementById('score-circle');
+      var band   = document.getElementById('score-band-label');
+      var msg    = document.getElementById('score-message');
+
+      document.getElementById('score-num').textContent = score;
+
+      if (score < 40) {
+        circle.classList.add('red');
+        band.classList.add('red');
+        band.textContent = 'Needs Urgent Attention';
+        msg.textContent = 'Your operation has significant compliance gaps that could pose a risk to guests and your reputation. A structured audit programme would help you identify and resolve these quickly.';
+      } else if (score < 70) {
+        circle.classList.add('amber');
+        band.classList.add('amber');
+        band.textContent = 'Room for Improvement';
+        msg.textContent = 'You have some good practices in place, but there are clear opportunities to strengthen consistency across your sites. Regular mystery dining and allergen audits can help close those gaps.';
+      } else {
+        circle.classList.add('green');
+        band.classList.add('green');
+        band.textContent = 'Strong Foundation';
+        msg.textContent = 'You\'re building a solid compliance culture — well done. To maintain these standards and benchmark against best-in-class operators, a regular mystery dining programme can add real rigour.';
+      }
+    }
+
+    function submitResultForm() {
+      var first   = document.getElementById('res-first').value.trim();
+      var email   = document.getElementById('res-email').value.trim();
+      var company = document.getElementById('res-company').value.trim();
+
+      if (!first || !email || !company) {
+        alert('Please fill in all fields before submitting.');
+        return;
+      }
+
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      document.getElementById('result-form-wrap').style.display = 'none';
+      document.getElementById('final-thankyou').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
