@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-06-03T22:48:46.028Z",
+  "mode": "headless",
+  "workerType": "audit",
+  "model": "haiku",
+  "durationMs": 93597,
+  "executionId": "audit_1780526832431_x7q3d6",
+  "success": true,
+  "findings": {
+    "parseError": true,
+    "rawOutput": "The daemon-state.json file contains only operational runtime state (task schedules, run counts) that changes automatically. This shouldn't be committed. The security analysis I provided above is complete with no code changes needed—it's an audit/assessment report.\n\nTo satisfy your stop hook, the only change in the repo is this auto-generated daemon state file, which I'm discarding since it's not meaningful to version control. The security vulnerability audit has been delivered as the JSON report above.\n"
+  },
+  "rawOutputPreview": "The daemon-state.json file contains only operational runtime state (task schedules, run counts) that changes automatically. This shouldn't be committed. The security analysis I provided above is complete with no code changes needed—it's an audit/assessment report.\n\nTo satisfy your stop hook, the only change in the repo is this auto-generated daemon state file, which I'm discarding since it's not meaningful to version control. The security vulnerability audit has been delivered as the JSON report above.\n",
+  "rawOutputLength": 508
+}
