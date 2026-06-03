@@ -5,3 +5,6 @@ sessions/
 neural/
 *.log
 *.tmp
+daemon-state.json
+daemon.pid
+metrics/
